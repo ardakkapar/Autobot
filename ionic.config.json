@@ -1,0 +1,7 @@
+{
+  "name": "Autobot_finale",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
