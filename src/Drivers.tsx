@@ -6,12 +6,13 @@ import {
   useMutation
 } from "@apollo/client";
 import { trashOutline } from 'ionicons/icons';
+import { useLocation } from 'react-router-dom';
 
 
 
 const DRIVERS = gql `
-  query User {
-    users (where: {id: {_eq: 1}}) {
+  query User($_eq: Int) {
+    users (where: {id: {_eq: $_eq}}) {
       id
       drivers {
         id
@@ -22,8 +23,8 @@ const DRIVERS = gql `
 `;
 
 const DEL = gql `
-  mutation MyMutation($_eq: Int) {
-    delete_drivers(where: {user_id: {_eq: 1}, id: {_eq: $_eq}}) {
+  mutation MyMutation($_eq1: Int, $_eq2: Int) {
+    delete_drivers(where: {user_id: {_eq: $_eq1}, id: {_eq: $_eq2}}) {
       returning {
         id
         iin_number
@@ -33,8 +34,7 @@ const DEL = gql `
 `
 
 
-
-const DeleteButton: React.FC<any> = ({arr}) =>  {  
+const DeleteButton: React.FC<any> = ({arr, userId}) =>  {  
   const [deletNum, { data, loading, error }] = useMutation(DEL, {
     refetchQueries: [DRIVERS]
   });
@@ -45,7 +45,7 @@ const DeleteButton: React.FC<any> = ({arr}) =>  {
   return(
     <IonButton class='delButton' expand='full' onClick={
       ()=>{for(var elem in arr) {
-        deletNum({variables: {_eq: arr[elem]}});
+        deletNum({variables: {_eq1:userId, _eq2: arr[elem]}});
       }
       }
     }><IonIcon icon={trashOutline}/></IonButton>
@@ -53,6 +53,9 @@ const DeleteButton: React.FC<any> = ({arr}) =>  {
 };
 
 const Drivers: React.FC<any> = ({switcher}) =>  {  
+    const search = useLocation().search;
+    const item = new URLSearchParams(search).get("user_id");
+    const user_id = Number(item);
     const [driverIins, setDriverIIns] = useState<number[]>([]);
     
     const checker = (id: number, e: React.MouseEvent<HTMLIonCheckboxElement, MouseEvent>) => {
@@ -62,7 +65,7 @@ const Drivers: React.FC<any> = ({switcher}) =>  {
         setDriverIIns((prev) => prev.filter((driverIins) => driverIins !== id));
       }
     }
-    const {loading, error, data} = useQuery(DRIVERS); 
+    const {loading, error, data} = useQuery(DRIVERS, {variables: {_eq:user_id}}); 
     if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
 
@@ -74,7 +77,7 @@ const Drivers: React.FC<any> = ({switcher}) =>  {
             {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeleteButton arr = {driverIins}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {driverIins} userId={user_id}/>}</IonFooter>
       </IonPage>
     );
 

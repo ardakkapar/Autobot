@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonApp, IonButton, IonButtons,  IonContent, IonHeader, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
 import {carSportOutline, personOutline} from 'ionicons/icons';
 
@@ -23,7 +23,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import { IonReactRouter } from '@ionic/react-router'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect, useLocation, useParams} from 'react-router-dom'
 
 import Automobiles from './Automobiles'
 import Drivers from './Drivers'
@@ -31,6 +31,7 @@ import Drivers from './Drivers'
 setupIonicReact();
 
 const App: React.FC = () => {
+  
   
   const [state, setState] = useState(false);
 
@@ -81,3 +82,5 @@ const App: React.FC = () => {
 
 
 export default App;
+
+
