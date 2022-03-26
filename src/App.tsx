@@ -44,11 +44,11 @@ const App: React.FC = () => {
         <IonHeader>
           <IonToolbar>
               <IonButtons slot="end">
-                <IonButton class='headerButton' size='small' color='dark' onClick={switcher}>
+                <IonButton size='small' color='dark' onClick={switcher}>
                   {state ? <p>Готово</p> : <p>Изменить</p>}
                 </IonButton>
               </IonButtons>
-            <IonTitle size = "large" class="headerfont">Autobot</IonTitle>
+            <IonTitle size = "large">Autobot</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent> 
@@ -63,13 +63,13 @@ const App: React.FC = () => {
               <Route exact path="/" render={() => <Redirect to="/automobiles"/>}/>
             </IonRouterOutlet>
             <IonTabBar slot="top">
-              <IonTabButton class='tabButton' tab="automobiles" href="/automobiles">
-                <IonIcon class='tabicon' icon={carSportOutline} />
-                <p>Автомобили</p> 
+              <IonTabButton tab="automobiles" href="/automobiles">
+                <IonIcon  icon={carSportOutline} />
+                <IonLabel>Автомобили</IonLabel> 
               </IonTabButton>
-              <IonTabButton class='tabButton' tab="drivers" href = "/drivers">
-                <IonIcon class='tabicon' icon={personOutline} />
-                <p>Водители</p>
+              <IonTabButton tab="drivers" href = "/drivers">
+                <IonIcon icon={personOutline} />
+                <IonLabel>Водители</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs> 

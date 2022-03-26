@@ -1,4 +1,4 @@
-import { IonButton, IonCheckbox, IonCol, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonPage, IonRow, useIonViewDidEnter } from '@ionic/react';
+import { IonButton, IonCheckbox, IonCol, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonPage, IonRow, useIonViewDidEnter } from '@ionic/react';
 import React, { useCallback, useState } from 'react';
 
 import {
@@ -22,13 +22,15 @@ const NUMBERS = gql `
 `;
 
 
+
 const DEL = gql `
   mutation MyMutation($_eq: Int) {
-    delete_user_cars(where: {user_id: {_eq: 1}, car_id: {_eq: $_eq}}) {
+    delete_cars(where: {user_id: {_eq: 1}, id: {_eq: $_eq}}) {
       returning {
-        car {
-          number
-        }
+        id
+        number
+        tech_passport
+        user_id
       }
     }
   }
@@ -36,12 +38,12 @@ const DEL = gql `
 
 
 
-const DELBUT: React.FC<any> = ({arr}) =>  {  
+const DeleteButton: React.FC<any> = ({arr}) =>  {  
   const [deletNum, { data, loading, error }] = useMutation(DEL, {
     refetchQueries: [NUMBERS]
   });
   
-  if (loading) return <h2>loading</h2>
+  if (loading) return <IonLoading isOpen={true} message={'Удаление...'}/>
   if (error) return <h2>error</h2>
 
   return(
@@ -50,7 +52,7 @@ const DELBUT: React.FC<any> = ({arr}) =>  {
         deletNum({variables: {_eq: arr[elem]}});
       }
       }
-    }><IonIcon icon={trashOutline} class='delIcon'/></IonButton>
+    }><IonIcon icon={trashOutline}/></IonButton>
   );
 };
 
@@ -65,18 +67,18 @@ const Automobiles: React.FC<any> = ({switcher}) =>  {
       }
     }
     const {loading, error, data} = useQuery(NUMBERS); 
-    if (loading) return <h2>loading</h2>
+    if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
 
     return  (
       <IonPage> {data.users.map(({id, cars}:any) => 
         <IonList key={id}> {cars.map(({id, number}:any) =>
           <IonItem  lines='none' key={id}>
-            <IonLabel class="itemfont"> {number} </IonLabel>
-            {switcher && <IonCheckbox class='checkBox' onClick={(e)=>checker(id, e)}/>}
+            <IonLabel> {number} </IonLabel>
+            {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DELBUT arr = {carIds}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {carIds}/>}</IonFooter>
       </IonPage>
     );
 
