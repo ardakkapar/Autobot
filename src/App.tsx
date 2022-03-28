@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonApp, IonButton, IonButtons,  IonContent, IonHeader, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
+import { IonApp, IonButton, IonButtons,  IonContent, IonHeader, IonIcon, IonLabel, IonRouterOutlet, IonTab, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
 import {carSportOutline, personOutline} from 'ionicons/icons';
 
 
@@ -27,55 +27,18 @@ import { Route, Redirect, useLocation, useParams} from 'react-router-dom'
 
 import Automobiles from './Automobiles'
 import Drivers from './Drivers'
+import Home from './Home';
 
 setupIonicReact();
 
+
+
+
 const App: React.FC = () => {
-  
-  
-  const [state, setState] = useState(false);
-
-  const switcher = () => {
-    state ? setState(false) : setState(true);
-  }
-
+ 
   return (
     <IonApp>
-      <IonReactRouter>
-        <IonHeader>
-          <IonToolbar>
-              <IonButtons slot="end">
-                <IonButton size='small' color='dark' onClick={switcher}>
-                  {state ? <p>Готово</p> : <p>Изменить</p>}
-                </IonButton>
-              </IonButtons>
-            <IonTitle size = "large">Autobot</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent> 
-          <IonTabs>
-            <IonRouterOutlet>
-              <Route path="/automobiles"  exact={true}>
-                <Automobiles switcher = {state}/>
-              </Route>
-              <Route path="/drivers" exact={true}>
-                <Drivers switcher = {state}/>
-              </Route>
-              <Route exact path="/" render={() => <Redirect to="/automobiles"/>}/>
-            </IonRouterOutlet>
-            <IonTabBar slot="top">
-              <IonTabButton tab="automobiles" href="/automobiles">
-                <IonIcon  icon={carSportOutline} />
-                <IonLabel>Автомобили</IonLabel> 
-              </IonTabButton>
-              <IonTabButton tab="drivers" href = "/drivers">
-                <IonIcon icon={personOutline} />
-                <IonLabel>Водители</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
-          </IonTabs> 
-        </IonContent>
-      </IonReactRouter>
+      <Home/>
     </IonApp>
   )
 };

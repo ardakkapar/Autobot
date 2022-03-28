@@ -8,7 +8,7 @@ import {
   useLazyQuery
 } from "@apollo/client";
 import { car, key, reload, trashOutline } from 'ionicons/icons';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 const NUMBERS = gql `
   query User($_eq: Int) {
@@ -37,8 +37,6 @@ const DEL = gql `
   }
 `
 
-
-
 const DeleteButton: React.FC<any> = ({arr, userId}) =>  {  
   const [deletNum, { data, loading, error }] = useMutation(DEL, {
     refetchQueries: [NUMBERS]
@@ -57,12 +55,12 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   );
 };
 
-const Automobiles: React.FC<any> = ({switcher}) =>  {  
-    const search = useLocation().search;
-    const item = new URLSearchParams(search).get("user_id");
-    const user_id = Number(item);
-    const [carIds, setCarIds] = useState<number[]>([]);
+const Automobiles: React.FC<any> = ({switcher,aidi}) =>  {  
     
+    const [carIds, setCarIds] = useState<number[]>([]);
+    const {id}: {id:string} = useParams();
+    const userId = Number(id);
+    aidi(userId);
     const checker = (id: number, e: React.MouseEvent<HTMLIonCheckboxElement, MouseEvent>) => {
       if(e.currentTarget.checked) {
         setCarIds((prev) => [...prev, id]);
@@ -70,7 +68,7 @@ const Automobiles: React.FC<any> = ({switcher}) =>  {
         setCarIds((prev) => prev.filter((carId) => carId !== id));
       }
     }
-    const {loading, error, data} = useQuery(NUMBERS, {variables: {_eq: user_id}}); 
+    const {loading, error, data} = useQuery(NUMBERS, {variables: {_eq: userId}}); 
     if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
     return  (
@@ -81,7 +79,7 @@ const Automobiles: React.FC<any> = ({switcher}) =>  {
             {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeleteButton arr = {carIds} userId = {user_id}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {carIds} userId = {userId}/>}</IonFooter>
       </IonPage>
     );
 
@@ -89,6 +87,8 @@ const Automobiles: React.FC<any> = ({switcher}) =>  {
 
   export default Automobiles
   
+
+
 
 
 

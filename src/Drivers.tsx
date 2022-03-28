@@ -6,7 +6,7 @@ import {
   useMutation
 } from "@apollo/client";
 import { trashOutline } from 'ionicons/icons';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 
 
@@ -52,12 +52,12 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   );
 };
 
-const Drivers: React.FC<any> = ({switcher}) =>  {  
-    const search = useLocation().search;
-    const item = new URLSearchParams(search).get("user_id");
-    const user_id = Number(item);
-    const [driverIins, setDriverIIns] = useState<number[]>([]);
+const Drivers: React.FC<any> = ({switcher, aidi}) =>  {  
     
+    const [driverIins, setDriverIIns] = useState<number[]>([]);
+    const {id}: {id:string} = useParams();
+    const userId = Number(id);
+    aidi(userId);
     const checker = (id: number, e: React.MouseEvent<HTMLIonCheckboxElement, MouseEvent>) => {
       if(e.currentTarget.checked) {
         setDriverIIns((prev) => [...prev, id]);
@@ -65,7 +65,7 @@ const Drivers: React.FC<any> = ({switcher}) =>  {
         setDriverIIns((prev) => prev.filter((driverIins) => driverIins !== id));
       }
     }
-    const {loading, error, data} = useQuery(DRIVERS, {variables: {_eq:user_id}}); 
+    const {loading, error, data} = useQuery(DRIVERS, {variables: {_eq:userId}}); 
     if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
 
@@ -77,7 +77,7 @@ const Drivers: React.FC<any> = ({switcher}) =>  {
             {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeleteButton arr = {driverIins} userId={user_id}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {driverIins} userId={userId}/>}</IonFooter>
       </IonPage>
     );
 
