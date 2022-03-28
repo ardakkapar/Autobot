@@ -52,8 +52,12 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   );
 };
 
-const Drivers: React.FC<any> = ({switcher, aidi}) =>  {  
-    
+const Drivers: React.FC<any> = ({switcher, aidi, url}) =>  {  
+    if (window.location.pathname.includes("automobiles") === true) {
+      url(true);
+    } else {
+      url(false);
+    }
     const [driverIins, setDriverIIns] = useState<number[]>([]);
     const {id}: {id:string} = useParams();
     const userId = Number(id);

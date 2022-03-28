@@ -42,11 +42,19 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
     refetchQueries: [NUMBERS]
   });
   
+  var color = "";
+  var enabler = false;
+  if (arr.length > 0) {
+    enabler = true;
+    color = "danger";
+  } else {
+    enabler = false;
+    color = "medium";
+  }
   if (loading) return <IonLoading isOpen={true} message={'Удаление...'}/>
   if (error) return <h2>error</h2>
-
   return(
-    <IonButton class='delButton' expand='full' onClick={
+    <IonButton color={color}  disabled={!enabler} class='delButton' expand='full' onClick={
       ()=>{for(var elem in arr) {
         deletNum({variables: {_eq1: userId, _eq2: arr[elem]}});
       }
@@ -55,8 +63,12 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   );
 };
 
-const Automobiles: React.FC<any> = ({switcher,aidi}) =>  {  
-    
+const Automobiles: React.FC<any> = ({switcher,aidi, url}) =>  {  
+    if (window.location.pathname.includes("automobiles") === true) {
+      url(true);
+    } else {
+      url(false);
+    }
     const [carIds, setCarIds] = useState<number[]>([]);
     const {id}: {id:string} = useParams();
     const userId = Number(id);
