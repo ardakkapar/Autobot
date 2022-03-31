@@ -9,9 +9,13 @@ import Drivers from './Drivers';
 
 
 const Home: React.FC = () => {
+  const [carIds, setCarIds] = useState<number[]>([]);
+  const [driverIins, setDriverIIns] = useState<number[]>([]);
   const [state, setState] = useState(false);
   const switcher = () => {
     state ? setState(false) : setState(true);
+    carIds.splice(0, carIds.length);
+    driverIins.splice(0, driverIins.length);
   }
 
   const [userId, setUserId] = useState<number>();
@@ -19,12 +23,11 @@ const Home: React.FC = () => {
     setUserId(childId);
   }
   
-  const [selectedTabButton, setSelected] = useState<boolean>(false);
+  const [selectedTabButton, setSelected] = useState<boolean>();
   const urlChecker = (childUrl: boolean) => {
     setSelected(childUrl);
   }
   
- // urlCheck();  
   return (
     <IonReactRouter>
         <IonHeader>
@@ -41,14 +44,14 @@ const Home: React.FC = () => {
           <IonTabs>
             <IonRouterOutlet>
               <Route path="/automobiles/:id" exact={true}>
-                <Automobiles switcher = {state} aidi = {idAssigner} url={urlChecker}/>
+                <Automobiles switcher = {state} aidi = {idAssigner} url={urlChecker} carIds={carIds} setCarIds={setCarIds}/>
               </Route>
               <Route path="/drivers/:id" exact={true} >
-                <Drivers switcher = {state} aidi = {idAssigner} url = {urlChecker}/>
+                <Drivers switcher = {state} aidi = {idAssigner} url = {urlChecker} driverIins={driverIins} setDriverIIns={setDriverIIns}/>
               </Route>
               <Route exact path="/" render={() => <Redirect to={`/automobiles/${userId}`}/>}/>
             </IonRouterOutlet>
-            <IonTabBar slot="top">
+            <IonTabBar slot="top" onIonTabsDidChange={()=>setState(false)}>
               <IonTabButton selected={selectedTabButton} tab='automobiles' href={`/automobiles/${userId}`}>
                 <IonIcon  icon={carSportOutline}/>
                 <IonLabel>Автомобили</IonLabel> 

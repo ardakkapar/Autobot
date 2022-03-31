@@ -1,5 +1,5 @@
 import { IonBackdrop, IonButton, IonCheckbox, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonLoading, IonPage, useIonLoading } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useQuery,
   gql,
@@ -35,6 +35,15 @@ const DEL = gql `
 
 
 const DeleteButton: React.FC<any> = ({arr, userId}) =>  {  
+  let color = "";
+  let enabler = false;
+  if (arr.length > 0) {
+    enabler = true;
+    color = "danger";
+  } else {
+    enabler = false;
+    color = "medium";
+  }
   const [deletNum, { data, loading, error }] = useMutation(DEL, {
     refetchQueries: [DRIVERS]
   });
@@ -43,8 +52,8 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   if (error) return <h2>error</h2>
 
   return(
-    <IonButton class='delButton' expand='full' onClick={
-      ()=>{for(var elem in arr) {
+    <IonButton disabled={!enabler} color={color} class='delButton' expand='full' onClick={
+      ()=>{for(let elem in arr) {
         deletNum({variables: {_eq1:userId, _eq2: arr[elem]}});
       }
       }
@@ -52,21 +61,21 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
   );
 };
 
-const Drivers: React.FC<any> = ({switcher, aidi, url}) =>  {  
-    if (window.location.pathname.includes("automobiles") === true) {
-      url(true);
-    } else {
-      url(false);
-    }
-    const [driverIins, setDriverIIns] = useState<number[]>([]);
+const Drivers: React.FC<any> = ({switcher, aidi, url, driverIins, setDriverIIns}) =>  {  
+    useEffect(()=>{url(window.location.pathname.includes("automobiles"))});
+      
+    
     const {id}: {id:string} = useParams();
     const userId = Number(id);
-    aidi(userId);
+    
+    useEffect(()=>{aidi(userId)});
+  
+    
     const checker = (id: number, e: React.MouseEvent<HTMLIonCheckboxElement, MouseEvent>) => {
       if(e.currentTarget.checked) {
-        setDriverIIns((prev) => [...prev, id]);
+        setDriverIIns((prev:any) => [...prev, id]);
       } else {
-        setDriverIIns((prev) => prev.filter((driverIins) => driverIins !== id));
+        setDriverIIns((prev:any) => prev.filter((driverIins:any) => driverIins !== id));
       }
     }
     const {loading, error, data} = useQuery(DRIVERS, {variables: {_eq:userId}}); 
