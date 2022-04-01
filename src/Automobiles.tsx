@@ -37,7 +37,7 @@ const DEL = gql `
   }
 `
 
-const DeleteButton: React.FC<any> = ({arr, userId}) =>  {  
+const DeletButton: React.FC<any> = ({arr, userId}) =>  {  
   let color = "";
   let enabler = false;
   if (arr.length > 0) {
@@ -97,7 +97,7 @@ const Automobiles: React.FC<any> = ({switcher,aidi, url, carIds, setCarIds}) => 
             {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeleteButton arr = {carIds} userId = {userId}/>}</IonFooter>
+        <IonFooter>{switcher && <DeletButton arr = {carIds} userId = {userId}/>}</IonFooter>
       </IonPage>
     );
 

@@ -55,6 +55,7 @@ const DeleteButton: React.FC<any> = ({arr, userId}) =>  {
     <IonButton disabled={!enabler} color={color} class='delButton' expand='full' onClick={
       ()=>{for(let elem in arr) {
         deletNum({variables: {_eq1:userId, _eq2: arr[elem]}});
+        arr.pop(elem);
       }
       }
     }><IonIcon icon={trashOutline}/></IonButton>
