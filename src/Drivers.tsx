@@ -7,6 +7,7 @@ import {
 } from "@apollo/client";
 import { trashOutline } from 'ionicons/icons';
 import { useLocation, useParams } from 'react-router-dom';
+import DeleteButton from './DeleteButton';
 
 
 
@@ -22,7 +23,7 @@ const DRIVERS = gql `
   }
 `;
 
-const DEL = gql `
+const DELDRIVER = gql `
   mutation MyMutation($_eq1: Int, $_eq2: Int) {
     delete_drivers(where: {user_id: {_eq: $_eq1}, id: {_eq: $_eq2}}) {
       returning {
@@ -33,34 +34,6 @@ const DEL = gql `
   }
 `
 
-
-const DeleteButton: React.FC<any> = ({arr, userId}) =>  {  
-  let color = "";
-  let enabler = false;
-  if (arr.length > 0) {
-    enabler = true;
-    color = "danger";
-  } else {
-    enabler = false;
-    color = "medium";
-  }
-  const [deletNum, { data, loading, error }] = useMutation(DEL, {
-    refetchQueries: [DRIVERS]
-  });
-  
-  if (loading) return <IonLoading isOpen={true} message={'Удаление...'}/>
-  if (error) return <h2>error</h2>
-
-  return(
-    <IonButton disabled={!enabler} color={color} class='delButton' expand='full' onClick={
-      ()=>{for(let elem in arr) {
-        deletNum({variables: {_eq1:userId, _eq2: arr[elem]}});
-        arr.pop(elem);
-      }
-      }
-    }><IonIcon icon={trashOutline}/></IonButton>
-  );
-};
 
 const Drivers: React.FC<any> = ({switcher, aidi, url, driverIins, setDriverIIns}) =>  {  
     useEffect(()=>{url(window.location.pathname.includes("automobiles"))});
@@ -88,13 +61,13 @@ const Drivers: React.FC<any> = ({switcher, aidi, url, driverIins, setDriverIIns}
         <IonList key={id}> {drivers.map(({id, iin_number}:any) =>
           <IonItem  lines='none' key={id}>
             <IonLabel> {iin_number} </IonLabel>
-            {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
+            {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>} 
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeleteButton arr = {driverIins} userId={userId}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {driverIins} userId={userId} refetchQuery={DRIVERS} mutation={DELDRIVER}/>}</IonFooter>
       </IonPage>
     );
-
+ 
   };
 
   export default Drivers

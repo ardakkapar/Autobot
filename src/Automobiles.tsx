@@ -9,6 +9,7 @@ import {
 } from "@apollo/client";
 import { car, key, reload, trashOutline } from 'ionicons/icons';
 import { useLocation, useParams } from 'react-router-dom';
+import DeleteButton from './DeleteButton';
 
 const NUMBERS = gql `
   query User($_eq: Int) {
@@ -24,7 +25,7 @@ const NUMBERS = gql `
 
 
 
-const DEL = gql `
+const DELNUM = gql `
   mutation MyMutation($_eq1: Int, $_eq2: Int) {
     delete_cars(where: {user_id: {_eq: $_eq1}, id: {_eq: $_eq2}}) {
       returning {
@@ -36,35 +37,6 @@ const DEL = gql `
     }
   }
 `
-
-const DeletButton: React.FC<any> = ({arr, userId}) =>  {  
-  let color = "";
-  let enabler = false;
-  if (arr.length > 0) {
-    enabler = true;
-    color = "danger";
-  } else {
-    enabler = false;
-    color = "medium";
-  }
-  
-  const [deletNum, { data, loading, error }] = useMutation(DEL, {
-    refetchQueries: [NUMBERS]
-  });
-  
-  if (loading) return <IonLoading isOpen={true} message={'Удаление...'}/>
-  if (error) return <h2>error</h2>
-  return(
-    <IonButton disabled={!enabler} color={color} class='delButton' expand='full' onClick={
-      ()=>{for(let elem in arr) {
-        deletNum({variables: {_eq1: userId, _eq2: arr[elem]}});
-        arr.pop(elem);
-      }
-      }
-    }><IonIcon icon={trashOutline}/></IonButton>
-    
-  );
-};
 
 const Automobiles: React.FC<any> = ({switcher,aidi, url, carIds, setCarIds}) =>  {  
     //check if url has "automobiles" in its path
@@ -97,7 +69,7 @@ const Automobiles: React.FC<any> = ({switcher,aidi, url, carIds, setCarIds}) => 
             {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
           </IonItem> )}
         </IonList> )}
-        <IonFooter>{switcher && <DeletButton arr = {carIds} userId = {userId}/>}</IonFooter>
+        <IonFooter>{switcher && <DeleteButton arr = {carIds} userId = {userId} refetchQuery={NUMBERS} mutation={DELNUM}/>}</IonFooter>
       </IonPage>
     );
 
