@@ -12,12 +12,15 @@ import { useLocation, useParams } from 'react-router-dom';
 import DeleteButton from './DeleteButton';
 
 const NUMBERS = gql `
-  query User($_eq: Int) {
-    users (where: {id: {_eq: $_eq}}) {
+  query MyQuery($_eq: Int) {
+    users(where: {id: {_eq: $_eq}}) {
       id
-      cars {
+      user_cars {
         id
-        number
+        car {
+          id
+          number
+        }
       }
     }
   }
@@ -27,12 +30,11 @@ const NUMBERS = gql `
 
 const DELNUM = gql `
   mutation MyMutation($_eq1: Int, $_eq2: Int) {
-    delete_cars(where: {user_id: {_eq: $_eq1}, id: {_eq: $_eq2}}) {
+    delete_user_cars(where: {user_id: {_eq: $_eq1}, car_id: {_eq: $_eq2}}) {
       returning {
-        id
-        number
-        tech_passport
-        user_id
+        car {
+          number
+        }
       }
     }
   }
@@ -61,13 +63,14 @@ const Automobiles: React.FC<any> = ({switcher,aidi, url, carIds, setCarIds}) => 
     const {loading, error, data} = useQuery(NUMBERS, {variables: {_eq: userId}}); 
     if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
+    
     return  (
-      <IonPage> {data.users.map(({id, cars}:any) => 
-        <IonList key={id}> {cars.map(({id, number}:any) =>
-          <IonItem  lines='none' key={id}>
-            <IonLabel> {number} </IonLabel>
-            {switcher && <IonCheckbox onClick={(e)=>checker(id, e)}/>}
-          </IonItem> )}
+      <IonPage> {data.users.map(({id, user_cars}:any) => 
+        <IonList key={id}> {user_cars.map(({id, car}:any) =>
+          <IonItem  lines='none' key={id}> 
+            <IonLabel> {car.number} </IonLabel> 
+            {switcher && <IonCheckbox onClick={(e)=>checker(car.id, e)}/>}  
+          </IonItem> )} 
         </IonList> )}
         <IonFooter>{switcher && <DeleteButton arr = {carIds} userId = {userId} refetchQuery={NUMBERS} mutation={DELNUM}/>}</IonFooter>
       </IonPage>

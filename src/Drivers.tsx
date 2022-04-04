@@ -38,13 +38,10 @@ const DELDRIVER = gql `
 const Drivers: React.FC<any> = ({switcher, aidi, url, driverIins, setDriverIIns}) =>  {  
     useEffect(()=>{url(window.location.pathname.includes("automobiles"))});
       
-    
     const {id}: {id:string} = useParams();
     const userId = Number(id);
-    
     useEffect(()=>{aidi(userId)});
   
-    
     const checker = (id: number, e: React.MouseEvent<HTMLIonCheckboxElement, MouseEvent>) => {
       if(e.currentTarget.checked) {
         setDriverIIns((prev:any) => [...prev, id]);
@@ -52,6 +49,7 @@ const Drivers: React.FC<any> = ({switcher, aidi, url, driverIins, setDriverIIns}
         setDriverIIns((prev:any) => prev.filter((driverIins:any) => driverIins !== id));
       }
     }
+
     const {loading, error, data} = useQuery(DRIVERS, {variables: {_eq:userId}}); 
     if (loading) return <IonLoading isOpen={true} message={'Загрузка...'}></IonLoading>
     if (error) return <h2>error</h2>
